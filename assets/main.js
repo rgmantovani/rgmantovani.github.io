@@ -74,6 +74,10 @@
   var all = document.getElementById("pubs-all");
   var search = document.getElementById("pub-search");
   var filter = "all";
+  var years = pubs.map(function (p) { return p.y; })
+    .filter(function (y, i, a) { return a.indexOf(y) === i; })
+    .sort(function (a, b) { return b - a; });
+  var year = years[0];
 
   function normalize(s) {
     return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
@@ -86,19 +90,37 @@
       return !q || normalize(p.title + " " + p.authors + " " + (p.venue || "") + " " + p.y).indexOf(q) >= 0;
     });
     all.textContent = "";
+
+    // Year tabs: every year is listed; years with no match under the
+    // current filter/search are disabled. One year is shown at a time.
+    var counts = {};
+    shown.forEach(function (p) { counts[p.y] = (counts[p.y] || 0) + 1; });
+    if (!counts[year]) year = shown.length ? shown[0].y : null;
+
+    var tabs = all.appendChild(el("div", "year-tabs"));
+    tabs.setAttribute("role", "tablist");
+    years.forEach(function (y) {
+      var b = tabs.appendChild(el("button", "year-tab"));
+      b.type = "button";
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", String(y === year));
+      b.disabled = !counts[y];
+      b.appendChild(el("span", null, String(y)));
+      if (counts[y]) b.appendChild(el("span", "year-count", String(counts[y])));
+      b.addEventListener("click", function () { year = y; renderAll(); });
+    });
+
     if (!shown.length) {
       all.appendChild(el("p", "muted")).appendChild(bilingual("Nenhuma publicação encontrada.", "No publications found."));
       return;
     }
-    var year = null, list = null;
-    shown.forEach(function (p) {
-      if (p.y !== year) {
-        year = p.y;
-        all.appendChild(el("h4", "pub-year", String(year)));
-        list = all.appendChild(el("ol", "pubs"));
-      }
+    var list = all.appendChild(el("ol", "pubs year-panel"));
+    list.setAttribute("role", "tabpanel");
+    shown.filter(function (p) { return p.y === year; }).forEach(function (p) {
       list.appendChild(renderPub(p));
     });
+    var active = tabs.querySelector('[aria-selected="true"]');
+    if (active) tabs.scrollLeft = active.offsetLeft - tabs.offsetLeft - 16;
   }
 
   document.querySelectorAll("[data-filter]").forEach(function (b) {
