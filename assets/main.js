@@ -147,30 +147,37 @@
   search.addEventListener("input", renderAll);
   renderAll();
 
-  // Supervisions, one tab per type
+  // Supervisions, one tab per level
   var sups = window.SUPERVISIONS || [];
   var SUP_TYPES = [
+    { key: "phd", pt: "Doutorado", en: "PhD" },
+    { key: "msc", pt: "Mestrado", en: "MSc" },
+    { key: "tcc", pt: "Graduação (TCC)", en: "BSc thesis" },
     { key: "ic", pt: "Iniciação científica", en: "Undergrad research" },
-    { key: "tcc", pt: "TCC", en: "BSc theses" },
-    { key: "esp", pt: "Especialização", en: "Specialization" },
-    { key: "pg", pt: "Coorientação (pós-graduação)", en: "Graduate co-supervision" }
+    { key: "ext", pt: "Extensão", en: "Outreach" },
+    { key: "esp", pt: "Especialização", en: "Specialization" }
   ];
   var COURSES = {
     ec: ["Engenharia de Computação", "Computer Engineering"],
     cc: ["Ciência da Computação", "Computer Science"],
     es: ["Engenharia de Software", "Software Engineering"],
-    si: ["Sistemas de Informação", "Information Systems"],
-    phd: ["Doutorado em Ciência da Computação", "PhD in Computer Science"],
-    msc: ["Mestrado em Ciência da Computação", "MSc in Computer Science"]
+    si: ["Sistemas de Informação", "Information Systems"]
   };
   var supBox = document.getElementById("supervisions");
-  var supType = "ic";
+  var supType = SUP_TYPES.filter(function (t) {
+    return sups.some(function (s) { return s.type === t.key; });
+  }).concat(SUP_TYPES)[0].key;
 
   function renderSup(s) {
     var li = el("li", "pub");
     li.appendChild(el("div", "pub-title", s.name));
     li.appendChild(el("div", "pub-authors", s.title));
     var meta = li.appendChild(el("div", "pub-meta"));
+    var ongoing = s.status === "ongoing";
+    meta.appendChild(el("span", "tag " + (ongoing ? "tag-ongoing" : "tag-done")))
+      .appendChild(ongoing ? bilingual("Em andamento", "Ongoing") : bilingual("Concluída", "Completed"));
+    meta.appendChild(el("span", "tag " + (s.role === "co" ? "tag-co" : "tag-j")))
+      .appendChild(s.role === "co" ? bilingual("Coorientação", "Co-advisor") : bilingual("Orientação", "Advisor"));
     if (s.type === "ic") {
       meta.appendChild(bilingual("Engenharia de Computação", "Computer Engineering"));
       meta.appendChild(document.createTextNode(" · UTFPR"));
@@ -181,7 +188,7 @@
       meta.appendChild(bilingual(COURSES[s.course][0], COURSES[s.course][1]));
       meta.appendChild(document.createTextNode(" · " + s.inst));
     }
-    meta.appendChild(document.createTextNode(" · " + s.y));
+    meta.appendChild(document.createTextNode(" · " + (ongoing ? (s.y + "–") : s.y)));
     if (s.fund) meta.appendChild(el("span", "tag tag-c", s.fund));
     return li;
   }

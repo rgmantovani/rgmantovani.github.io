@@ -1,5 +1,7 @@
-// Completed supervisions (source: Lattes CV). Titles are kept in their original language.
-// type: ic = undergrad research, tcc = BSc thesis, esp = specialization, pg = graduate co-supervision.
+// Supervisions (source: Lattes CV). Titles are kept in their original language.
+// type: phd, msc, tcc (BSc thesis), ic (undergrad research), ext (outreach), esp (specialization).
+// role: "co" for co-supervision (default: main advisor).
+// status: "ongoing" while in progress (default: completed).
 // course: key into COURSES in main.js.
 window.SUPERVISIONS = [
   // Undergraduate research (IC) — UTFPR, Computer Engineering
@@ -48,7 +50,7 @@ window.SUPERVISIONS = [
   { type: "esp", y: 2022, name: "Lucas Dybax de Andrade", title: "Classificação da Faixa de Peso de Produtos com Deep Learning e BERT" },
   { type: "esp", y: 2021, name: "Edgar de Souza Vismara", title: "Classificação do nível de crescimento de colônias de fungos em meio sólido: uma abordagem baseada em aprendizado de máquina" },
 
-  // Graduate co-supervision
-  { type: "pg", y: 2025, name: "Aline Marques Del Valle", title: "Aprendizado de Máquina Automatizado Multiobjetivo para Classificação Multirrótulo", course: "phd", inst: "UFSCar" },
-  { type: "pg", y: 2020, name: "Thiago de Jesus Inocêncio", title: "A Methodology for Designing System-of-System Architecture based on Emergent Behaviour obtained from Business Process", course: "msc", inst: "UFABC" }
+  // Graduate (co-supervision)
+  { type: "phd", role: "co", y: 2025, name: "Aline Marques Del Valle", title: "Aprendizado de Máquina Automatizado Multiobjetivo para Classificação Multirrótulo", course: "cc", inst: "UFSCar" },
+  { type: "msc", role: "co", y: 2020, name: "Thiago de Jesus Inocêncio", title: "A Methodology for Designing System-of-System Architecture based on Emergent Behaviour obtained from Business Process", course: "cc", inst: "UFABC" }
 ];

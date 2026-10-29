@@ -179,6 +179,9 @@ h3.sub {
 .tag-c { background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px var(--muted); }
 .tag-p { background: var(--band-gray); color: var(--muted); }
 .tag-award { background: var(--yellow); color: var(--ink); }
+.tag-done { background: var(--band-gray); color: var(--muted); }
+.tag-ongoing { background: var(--yellow); color: var(--ink); }
+.tag-co { background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px var(--text); }
 :root[data-theme="dark"] .tag-j { background: #f2f2f0; color: var(--ink); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tag-j { background: #f2f2f0; color: var(--ink); } }
 .tabs {
