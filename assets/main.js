@@ -39,6 +39,28 @@
     return f;
   }
 
+  // Tab bar: entries are {key, label (string or node), count}; entries
+  // without a count are disabled. Calls onSelect(key) on click.
+  function tabBar(entries, active, onSelect) {
+    var bar = el("div", "tabs");
+    bar.setAttribute("role", "tablist");
+    entries.forEach(function (t) {
+      var b = bar.appendChild(el("button", "tab"));
+      b.type = "button";
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", String(t.key === active));
+      b.disabled = !t.count;
+      b.appendChild(typeof t.label === "string" ? el("span", null, t.label) : t.label);
+      if (t.count) b.appendChild(el("span", "tab-count", String(t.count)));
+      b.addEventListener("click", function () { onSelect(t.key); });
+    });
+    return bar;
+  }
+  function scrollToActive(bar) {
+    var active = bar.querySelector('[aria-selected="true"]');
+    if (active) bar.scrollLeft = active.offsetLeft - bar.offsetLeft - 16;
+  }
+
   function renderPub(p) {
     var li = el("li", "pub");
     var title = el("div", "pub-title");
@@ -97,30 +119,20 @@
     shown.forEach(function (p) { counts[p.y] = (counts[p.y] || 0) + 1; });
     if (!counts[year]) year = shown.length ? shown[0].y : null;
 
-    var tabs = all.appendChild(el("div", "year-tabs"));
-    tabs.setAttribute("role", "tablist");
-    years.forEach(function (y) {
-      var b = tabs.appendChild(el("button", "year-tab"));
-      b.type = "button";
-      b.setAttribute("role", "tab");
-      b.setAttribute("aria-selected", String(y === year));
-      b.disabled = !counts[y];
-      b.appendChild(el("span", null, String(y)));
-      if (counts[y]) b.appendChild(el("span", "year-count", String(counts[y])));
-      b.addEventListener("click", function () { year = y; renderAll(); });
-    });
+    var tabs = all.appendChild(tabBar(years.map(function (y) {
+      return { key: y, label: String(y), count: counts[y] };
+    }), year, function (y) { year = y; renderAll(); }));
 
     if (!shown.length) {
       all.appendChild(el("p", "muted")).appendChild(bilingual("Nenhuma publicação encontrada.", "No publications found."));
       return;
     }
-    var list = all.appendChild(el("ol", "pubs year-panel"));
+    var list = all.appendChild(el("ol", "pubs tab-panel"));
     list.setAttribute("role", "tabpanel");
     shown.filter(function (p) { return p.y === year; }).forEach(function (p) {
       list.appendChild(renderPub(p));
     });
-    var active = tabs.querySelector('[aria-selected="true"]');
-    if (active) tabs.scrollLeft = active.offsetLeft - tabs.offsetLeft - 16;
+    scrollToActive(tabs);
   }
 
   document.querySelectorAll("[data-filter]").forEach(function (b) {
@@ -134,4 +146,58 @@
   });
   search.addEventListener("input", renderAll);
   renderAll();
+
+  // Supervisions, one tab per type
+  var sups = window.SUPERVISIONS || [];
+  var SUP_TYPES = [
+    { key: "ic", pt: "Iniciação científica", en: "Undergrad research" },
+    { key: "tcc", pt: "TCC", en: "BSc theses" },
+    { key: "esp", pt: "Especialização", en: "Specialization" },
+    { key: "pg", pt: "Coorientação (pós-graduação)", en: "Graduate co-supervision" }
+  ];
+  var COURSES = {
+    ec: ["Engenharia de Computação", "Computer Engineering"],
+    cc: ["Ciência da Computação", "Computer Science"],
+    es: ["Engenharia de Software", "Software Engineering"],
+    si: ["Sistemas de Informação", "Information Systems"],
+    phd: ["Doutorado em Ciência da Computação", "PhD in Computer Science"],
+    msc: ["Mestrado em Ciência da Computação", "MSc in Computer Science"]
+  };
+  var supBox = document.getElementById("supervisions");
+  var supType = "ic";
+
+  function renderSup(s) {
+    var li = el("li", "pub");
+    li.appendChild(el("div", "pub-title", s.name));
+    li.appendChild(el("div", "pub-authors", s.title));
+    var meta = li.appendChild(el("div", "pub-meta"));
+    if (s.type === "ic") {
+      meta.appendChild(bilingual("Engenharia de Computação", "Computer Engineering"));
+      meta.appendChild(document.createTextNode(" · UTFPR"));
+    } else if (s.type === "esp") {
+      meta.appendChild(bilingual("Especialização em Ciência de Dados", "Data Science specialization"));
+      meta.appendChild(document.createTextNode(" · UTFPR"));
+    } else {
+      meta.appendChild(bilingual(COURSES[s.course][0], COURSES[s.course][1]));
+      meta.appendChild(document.createTextNode(" · " + s.inst));
+    }
+    meta.appendChild(document.createTextNode(" · " + s.y));
+    if (s.fund) meta.appendChild(el("span", "tag tag-c", s.fund));
+    return li;
+  }
+
+  function renderSups() {
+    supBox.textContent = "";
+    var tabs = supBox.appendChild(tabBar(SUP_TYPES.map(function (t) {
+      var n = sups.filter(function (s) { return s.type === t.key; }).length;
+      return { key: t.key, label: bilingual(t.pt, t.en), count: n };
+    }), supType, function (k) { supType = k; renderSups(); }));
+    var list = supBox.appendChild(el("ol", "pubs tab-panel"));
+    list.setAttribute("role", "tabpanel");
+    sups.filter(function (s) { return s.type === supType; }).forEach(function (s) {
+      list.appendChild(renderSup(s));
+    });
+    scrollToActive(tabs);
+  }
+  if (supBox) renderSups();
 })();
