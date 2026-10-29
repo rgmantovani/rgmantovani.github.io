@@ -1,6 +1,6 @@
 // Supervisions (source: Lattes CV). Titles are kept in their original language.
 // type: phd, msc, tcc (BSc thesis), ic (undergrad research), ext (outreach), esp (specialization).
-// role: "co" for co-supervision (default: main advisor).
+// role: "co" for co-supervision (tagged on the page; main advisor is the default, untagged).
 // status: "ongoing" while in progress (default: completed).
 // course: key into COURSES in main.js.
 window.SUPERVISIONS = [

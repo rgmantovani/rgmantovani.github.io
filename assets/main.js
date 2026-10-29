@@ -176,8 +176,7 @@
     var ongoing = s.status === "ongoing";
     meta.appendChild(el("span", "tag " + (ongoing ? "tag-ongoing" : "tag-done")))
       .appendChild(ongoing ? bilingual("Em andamento", "Ongoing") : bilingual("Concluída", "Completed"));
-    meta.appendChild(el("span", "tag " + (s.role === "co" ? "tag-co" : "tag-j")))
-      .appendChild(s.role === "co" ? bilingual("Coorientação", "Co-advisor") : bilingual("Orientação", "Advisor"));
+    if (s.role === "co") meta.appendChild(el("span", "tag tag-co")).appendChild(bilingual("Coorientação", "Co-advisor"));
     if (s.type === "ic") {
       meta.appendChild(bilingual("Engenharia de Computação", "Computer Engineering"));
       meta.appendChild(document.createTextNode(" · UTFPR"));
