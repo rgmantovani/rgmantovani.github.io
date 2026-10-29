@@ -154,7 +154,6 @@
     { key: "msc", pt: "Mestrado", en: "MSc" },
     { key: "tcc", pt: "Graduação (TCC)", en: "BSc thesis" },
     { key: "ic", pt: "Iniciação científica", en: "Undergrad research" },
-    { key: "ext", pt: "Extensão", en: "Outreach" },
     { key: "esp", pt: "Especialização", en: "Specialization" }
   ];
   var COURSES = {
