@@ -1,7 +1,7 @@
 // Publication list. type: j = journal, c = conference, p = preprint.
 // sel: shown under "Selected publications".
 window.PUBLICATIONS = [
-  { y: 2026, type: "c", title: "Instance-Level Hardness Analysis for Multi-label Classification", authors: "B. U. Marcato, A. C. Lorena, A. Rivolli, R. G. Mantovani, R. Cerri", venue: "Intelligent Systems — BRACIS 2025 (LNCS, Springer), pp. 431–445", doi: "10.1007/978-3-032-39882-6_29" },
+  { y: 2026, type: "c", title: "Instance-Level Hardness Analysis for Multi-label Classification", authors: "B. U. Marcato, A. C. Lorena, A. Rivolli, R. G. Mantovani, R. Cerri", venue: "Intelligent Systems — BRACIS 2026 (LNCS, Springer), pp. 431–445", doi: "10.1007/978-3-032-39882-6_29" },
   { y: 2026, type: "c", title: "Detection of Anomalies in Computer Networks using Machine Learning", authors: "A. A. da Silva, R. G. Mantovani, L. F. Carvalho", venue: "Computer on the Beach", doi: "10.14210/cotb.v17.p177-184" },
   { y: 2026, type: "c", title: "Vocal Pathology Recognition Using Acoustic Features", authors: "K. I. Taniguchi, L. A. Taniguchi, M. M. Taniguchi, D. P. Campos, R. G. Mantovani", venue: "Computer on the Beach", doi: "10.14210/cotb.v17.p265-272" },
   { y: 2026, type: "c", title: "Previsão de Produtividade de Soja Utilizando Adaptação de Domínio", authors: "V. P. T. de Sousa, R. G. Mantovani, D. P. Campos, E. J. Possamai, A. de Toledo", venue: "Computer on the Beach", doi: "10.14210/cotb.v17.p833-835" },
